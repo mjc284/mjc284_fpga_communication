@@ -40,25 +40,23 @@ module main (
 
 	reg [24:0] cnt;
 	reg [5:0] cnt2;
-	assign led0 = cnt[24];
+	//assign led0 = cnt[24];
 	
-	always @(posedge sck) begin
+	always @(posedge clk) begin
 		cnt <= cnt + 1'b1;
 	end
 
 	always @(posedge cnt[24]) 
 		cnt2 <= cnt2 + 1'b1;
 
-	assign led1 = cnt[10];
-	assign led2 = mosi;
-
 	wire [7:0] spi_data;
+	wire trig_write;
 	spi_slave SPI_SLAVE(
 		.clk(clk),
 		.din({8'd5}), 
 		.dout(spi_data), 
-		.trig_read(),
-		.trig_write(),
+		.trig_read(led1),
+		.trig_write(trig_write),
 	
 		.ss(ss),
 		.mosi(mosi),
@@ -66,13 +64,21 @@ module main (
 		.sck(sck)
 	);
 
+	wire [7:0] fifo_data;
+	fifo FIFO(
+		.clk(clk),
+		.din(spi_data),
+		.trig_read(cnt[5]),
+		.trig_write(trig_write),
+		.dout(fifo_data)
+	);
 
 	seven_seg display (
 	.clk(clk),
 	.digit0(5'd20),
 	.digit1(5'd20),
 	.digit2(5'd20),
-	.digit3(spi_data),
+	.digit3(fifo_data),
 	.digit4(5'd20),
 	.digit5(5'd20),
 	
