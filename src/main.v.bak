@@ -1,0 +1,17 @@
+module spi_slave (
+	input clk,
+
+	input but1,
+	input but2,
+	
+	input led1,
+	output led2,
+	);
+	
+	sr_latch SR(
+		.s(but1),
+		.r(but2),
+		.q(led1)
+	);
+	
+endmodule

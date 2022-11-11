@@ -2,6 +2,7 @@ module fifo_pointer (
     input clk,
     input trig_write,
     input trig_read,
+	 output fifo_clk,
     output [1:0] data_pointer
     );
 
@@ -11,6 +12,7 @@ module fifo_pointer (
         .in(trig_write),
         .out(edge_write)
     );
+	 assign fifo_clk = edge_write;
 
     wire edge_read;
     edge_detector edge_detector_read(
@@ -50,5 +52,4 @@ Description: Pointer that can be incremented or decremented on the positive edge
 					  data_pointer: 2 -> 1 -> 0 -> 0
 
 Resources Usage: 15 LE
-
 */
