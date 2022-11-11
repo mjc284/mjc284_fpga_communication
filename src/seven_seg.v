@@ -122,5 +122,5 @@ Description: 6 X Seven segment display driver. Accepts binary numbers 0 to 20 fo
 		Input 10 to 19: Numbers 0 to 9 with decimal.
 		Input 20: Digit off.
 
-Resources Usage: 80 LE
+Resources Usage: ~60 LE
 */

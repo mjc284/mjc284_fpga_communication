@@ -1,0 +1,59 @@
+module fifo_pointer (
+    input trig_write,
+    input trig_read,
+    output [1:0] data_pointer
+    );
+
+    wire sA;
+    wire rA;
+    wire A;
+
+    wire sB;
+    wire rB;
+    wire B;
+
+    wire sC;
+    wire rC;
+    wire C;
+
+    wire sD;
+    wire rD;
+    wire D;
+
+    wire E = trig_write;
+    wire F = trig_read;
+
+    assign sA = B*C*D*!E;
+    assign rA = A*!B*!C*!D*!F;
+    assign sB = (A*!B*!C*!D*!F) | (A*!B*!D*!E*!F) | (A*C*D*E*F) | (!A*!B*C*D*E*!F);
+    assign rB = (B*D*!E*!F) | (B*C*D*!E) | (A*B*!E*F) | (!A*B*!C*!D*E*F);
+    assign sC = (A*B*!E*F) | (!A*!B*!C*D*!E) | (!A*B*!C*!E*!F) | (!A*B*!C*E*F) | (A*!B*!C*!D*!F) | (A*!B*!C*E*!F);
+    assign rC = (B*C*!E*F) | (B*C*D*!E) + (A*C*!E*!F) + (A*C*E*F) | (!A*!B*C*!D*!F) | (!A*!B*C*E*!F);
+    assign sD = (B*!D*!E*F) | (A*C*!D*F) | (!A*!B*!D*E*!F) | (!A*!B*C*!D*E) | (!A*C*!D*E*!F) | (!A*B*!C*!D*F) | (A*!B*!C*!D*E);
+    assign rD = (B*!C*D*E) | (B*C*D*F) | (A*D*E*!F) | (A*C*D*E) | (!A*!B*!C*D*F) | (!A*!B*D*!E*F) | (!B*!C*D*!E*F) | (!B*C*D*E*!F);
+
+    sr_latch srA(
+        .s(sA),
+        .r(rA),
+        .q(A)
+    )
+
+    sr_latch srB(
+        .s(sB),
+        .r(rB),
+        .q(B)
+    )
+
+    sr_latch srC(
+        .s(sC),
+        .r(rC),
+        .q(C)
+    )
+
+    sr_latch srD(
+        .s(sD),
+        .r(rD),
+        .q(D)
+    )
+
+endmodule

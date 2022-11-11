@@ -1,12 +1,15 @@
 module main (
 	input clk,
 
+	input but_rst,
 	input but1,
 	input but2,
+	input but3,
 	
 	output led0,
 	output led1,
 	output led2,
+	output led3,
 
 	output LED_A,
 	output LED_B,
@@ -21,26 +24,55 @@ module main (
 	output SEL2,
 	output SEL3,
 	output SEL4,
-	output SEL5
+	output SEL5,
+	
+	input ss,
+	input miso,
+	input mosi,
+	input sck
 	);
+	/*
+	assign led0 = ss;
+	assign led1 = miso;
+	assign led2 = mosi;
+	assign led3 = sck;
+	*/
 
 	reg [24:0] cnt;
 	reg [5:0] cnt2;
 	assign led0 = cnt[24];
 	
-	always @(posedge clk) begin
+	always @(posedge sck) begin
 		cnt <= cnt + 1'b1;
 	end
 
 	always @(posedge cnt[24]) 
 		cnt2 <= cnt2 + 1'b1;
 
+	assign led1 = cnt[10];
+	assign led2 = mosi;
+
+	wire [7:0] spi_data;
+	spi_slave SPI_SLAVE(
+		.clk(clk),
+		.din({8'd5}), 
+		.dout(spi_data), 
+		.trig_read(),
+		.trig_write(),
+	
+		.ss(ss),
+		.mosi(mosi),
+		.miso(miso),
+		.sck(sck)
+	);
+
+
 	seven_seg display (
 	.clk(clk),
 	.digit0(5'd20),
 	.digit1(5'd20),
-	.digit2(cnt2),
-	.digit3(5'd20),
+	.digit2(5'd20),
+	.digit3(spi_data),
 	.digit4(5'd20),
 	.digit5(5'd20),
 	
