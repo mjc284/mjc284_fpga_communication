@@ -3,9 +3,7 @@ module fifo_pointer (
     input trig_write,
     input trig_read,
 	 output fifo_clk,
-    output [1:0] data_pointer,
-	 output full,
-	 output empty
+    output [1:0] data_pointer
     );
 
     wire edge_write;
@@ -40,8 +38,6 @@ module fifo_pointer (
 
     assign data_pointer[0] = cnt[1] | cnt[3];
     assign data_pointer[1] = cnt[2] | cnt[3];
-	 assign full = cnt[4];
-	 assign empty = cnt[0];
 
 endmodule
 
